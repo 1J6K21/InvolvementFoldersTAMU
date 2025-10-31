@@ -1,0 +1,6 @@
+NODES:
+Node(id=1, type=COURSE, value=STAT 211)
+Node(id=2, type=COURSE, value=ECEN)
+
+EDGES:
+Edge(parent=1, child=2)
