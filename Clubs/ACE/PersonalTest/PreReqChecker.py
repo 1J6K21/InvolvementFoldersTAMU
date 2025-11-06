@@ -46,14 +46,14 @@ def prereqchecker(courses_taken, courses_enrolled, prereq_bucket):
             else:
                 prereq_bucket[i] = False # wasnt found in both
     
-        # ind = [i for i, val in enumerate(prereq_bucket) if val == "."] # find all the or indicies
+    # ind = [i for i, val in enumerate(prereq_bucket) if val == "."] # find all the or indicies
+    nextIndx = next((i for i, t in enumerate(prereq_bucket) if t == "."), None)
+    while nextIndx != None:
+        prereq_bucket[nextIndx-1:nextIndx+2] = [prereq_bucket[nextIndx-1] or prereq_bucket[nextIndx+1]]
+        # nextIndx = prereq_bucket.index(".")
         nextIndx = next((i for i, t in enumerate(prereq_bucket) if t == "."), None)
-        while nextIndx != None:
-            prereq_bucket[nextIndx-1:nextIndx+2] = [prereq_bucket[nextIndx-1] or prereq_bucket[nextIndx+1]]
-            # nextIndx = prereq_bucket.index(".")
-            nextIndx = next((i for i, t in enumerate(prereq_bucket) if t == "."), None)
 
-        prereq_bucket = all(prereq_bucket) # finally all the ands
+    prereq_bucket = all(prereq_bucket) # finally all the ands
     return prereq_bucket
 
 
@@ -64,7 +64,7 @@ if __name__ == "__main__":
     prereq_bucket = parse_prereq("data_Spring2026_Prereq_test (1).json","ECEN_403")
     import json
     print(json.dumps(prereq_bucket, indent=4))
-    assert(prereqchecker(["COMM205 C", "ECEN314 C", "ECEN325 C", "CSCE350 C", "ECEN303 C", "ECEN322 C", "ECEN370 C"], [], prereq_bucket= [[True]]) == True)
+    assert(prereqchecker(["COMM205 C", "ECEN314 C", "ECEN325 C", "CSCE350 C", "ECEN303 C", "ECEN322 C", "ECEN370 C"], [], prereq_bucket= prereq_bucket[:]) == True)
     assert(prereqchecker(["COMM205 C", "ECEN314 C", "ECEN325 C", "CSCE350 C", "ECEN303 C", "ECEN322 C", "ECEN370 C"], [], prereq_bucket= prereq_bucket[:]) == True)
     assert(prereqchecker(["COMM205 C", "ECEN314 C", "ECEN325 C", "CSCE350 C", "CSCE315 C",  "ECEN303 C"], ["ECEN449 C ^"], prereq_bucket= prereq_bucket[:]) == True)
     assert(prereqchecker(["ECEN314 C", "ECEN325 C", "CSCE350 C", "CSCE315 C",  "ECEN303 C"], ["ECEN449 C ^"], prereq_bucket= prereq_bucket[:]) == True)
