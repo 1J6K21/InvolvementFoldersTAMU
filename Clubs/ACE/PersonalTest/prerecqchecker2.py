@@ -49,22 +49,46 @@ def evaluate_bucket(courses_taken, courses_enrolled, bucket):
 
 
 def evaluate_single_requirement(courses_taken, courses_enrolled, token):
-    """
-    Evaluates one course requirement token.
-    Supports: course codes, and course codes ending with ^ (in progress).
-    """
-    pattern = r"[A-Z]{4}\d{3}\s*[^\\^]*"
+    token = token.strip()
+
+    # Handle OR symbol (.)
     if token == ".":
-        # handled elsewhere
         return token
 
-    # Check taken courses
-    if re.match(pattern + r"$", token.strip()):
-        return token.strip() in courses_taken
+    # Regex for base course pattern, e.g., "CHEM107 C" or "CHEM107 C ^"
+    pattern = r"^([A-Z]{4}\d{3})\s*([A-F])?(?:\s*\^)?$"
+    match = re.match(pattern, token)
+    if not match:
+        return False
 
-    # Check currently enrolled (marked with ^)
-    if re.match(pattern + r"\^$", token.strip()):
-        return token.strip() in courses_enrolled or token.strip() in courses_taken
+    course_code, min_grade = match.groups()
+    min_grade = min_grade or "D"  # default to D if unspecified (most lenient)
+
+    # Build both possible representations
+    required_with_grade = f"{course_code} {min_grade}"
+    required_concurrent = f"{required_with_grade} ^"
+
+    # Helper: function to extract grade letter
+    def extract_grade(entry):
+        parts = entry.split()
+        return parts[-1] if len(parts) > 1 and parts[-1].isalpha() else None
+
+    # --- 1️⃣ Check if concurrently enrolled ---
+    if required_concurrent in courses_enrolled:
+        return True  # currently taking it → satisfies "C ^" type prereq
+
+    # --- 2️⃣ Check if already taken with sufficient grade ---
+    for taken_course in courses_taken:
+        if taken_course.startswith(course_code):
+            grade = extract_grade(taken_course)
+            if grade and grade <= min_grade:
+                # e.g., A <= C (satisfied)
+                return True
+
+    # --- 3️⃣ Check if enrolled in base course (not marked with ^)
+    for enrolled_course in courses_enrolled:
+        if enrolled_course.startswith(course_code):
+            return True
 
     return False
 
@@ -113,3 +137,14 @@ if __name__ == "__main__":
         [],
         FINC_428_prereq_bucket
     ) == True
+    assert prereqchecker(
+        ["FINC421 A","FINC361 D"],
+        ["ACCT328 ^"],
+        FINC_428_prereq_bucket
+    ) == True
+    CSCE_421_prereq_bucket = parse_prereq("data_Spring2026_Prereq_test (1).json", "CSCE_421")
+    assert prereqchecker(
+        ["ECEN303 C", "CSCE120 C"],
+        [],
+        CSCE_421_prereq_bucket
+    ) == False
