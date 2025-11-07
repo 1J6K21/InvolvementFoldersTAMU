@@ -1,0 +1,1 @@
+print("ECEN403 A" < "ECEN403 F")
