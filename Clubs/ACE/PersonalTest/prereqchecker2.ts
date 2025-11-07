@@ -23,20 +23,21 @@ function evaluateBucket(
     coursesEnrolled: string[],
     bucket: PrereqBucket
 ): boolean | string {
-    //UNCOMMENT THIS LINE TO TRACE BUCKET CALLS
+    // Debug logging (uncomment to trace)
     // console.log("Evaluating bucket:", JSON.stringify(bucket, null, 2));
 
+    // Base case: string
     if (typeof bucket === "string") {
-        // return the raw token (".") or a boolean result
         return evaluateSingleRequirement(coursesTaken, coursesEnrolled, bucket);
     }
 
+    // Base case: boolean
     if (typeof bucket === "boolean") {
         return bucket;
     }
 
+    // Recursive case: evaluate sub-buckets
     const evaluated: (boolean | string)[] = [];
-
     for (const element of bucket) {
         if (Array.isArray(element)) {
             evaluated.push(evaluateBucket(coursesTaken, coursesEnrolled, element));
@@ -47,7 +48,7 @@ function evaluateBucket(
         }
     }
 
-    // Process ORs (".")
+    // Process ORs (".") left to right
     while (evaluated.includes(".")) {
         const idx = evaluated.indexOf(".");
         const left = evaluated[idx - 1] as boolean;
@@ -55,8 +56,8 @@ function evaluateBucket(
         evaluated.splice(idx - 1, 3, left || right);
     }
 
-    // Remaining ANDs
-    return evaluated.every((v) => v === true);
+    // After ORs, remaining items are ANDs - all must be true
+    return evaluated.every(v => v === true);
 }
 
 // --- Evaluate a single token like "CHEM107 C ^" ---
@@ -94,13 +95,17 @@ function evaluateSingleRequirement(
     for (const taken of coursesTaken) {
         if (taken.startsWith(courseCode)) {
             const grade = extractGrade(taken);
-            if (grade && grade <= minGrade) return true; // 'A' < 'C'
+            if (grade && grade <= minGrade) {  // 'A' <= 'C' -> true (satisfied)
+                return true;
+            }
         }
     }
 
     // --- 3️⃣ Enrolled in the same course (not necessarily with ^) ---
     for (const enrolled of coursesEnrolled) {
-        if (enrolled.startsWith(courseCode)) return true;
+        if (enrolled.startsWith(courseCode)) {
+            return true;
+        }
     }
 
     return false;
@@ -209,7 +214,7 @@ if (require.main === module) {
         assert.strictEqual(
             result,
             false,
-            `Expected true, got ${result} for prereqchecker(["ECEN303 C", "CSCE120 C", "CSCE310 B"], [])`
+            `Expected false, got ${result} for prereqchecker(["ECEN303 C", "CSCE120 C", "CSCE310 B"], [])`
         );
     }
 
