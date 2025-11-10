@@ -17,17 +17,15 @@ function parsePrereq(filename, courseName) {
 }
 // --- Evaluate recursively ---
 function evaluateBucket(coursesTaken, coursesEnrolled, bucket) {
-    // Debug logging (uncomment to trace)
+    //UNCOMMENT THIS LINE TO TRACE BUCKET CALLS
     // console.log("Evaluating bucket:", JSON.stringify(bucket, null, 2));
-    // Base case: string
     if (typeof bucket === "string") {
+        // return the raw token (".") or a boolean result
         return evaluateSingleRequirement(coursesTaken, coursesEnrolled, bucket);
     }
-    // Base case: boolean
     if (typeof bucket === "boolean") {
         return bucket;
     }
-    // Recursive case: evaluate sub-buckets
     var evaluated = [];
     for (var _i = 0, bucket_1 = bucket; _i < bucket_1.length; _i++) {
         var element = bucket_1[_i];
@@ -41,14 +39,14 @@ function evaluateBucket(coursesTaken, coursesEnrolled, bucket) {
             evaluated.push(element);
         }
     }
-    // Process ORs (".") left to right
+    // Process ORs (".")
     while (evaluated.includes(".")) {
         var idx = evaluated.indexOf(".");
         var left = evaluated[idx - 1];
         var right = evaluated[idx + 1];
         evaluated.splice(idx - 1, 3, left || right);
     }
-    // After ORs, remaining items are ANDs - all must be true
+    // Remaining ANDs
     return evaluated.every(function (v) { return v === true; });
 }
 // --- Evaluate a single token like "CHEM107 C ^" ---
@@ -80,17 +78,15 @@ function evaluateSingleRequirement(coursesTaken, coursesEnrolled, token) {
         var taken = coursesTaken_1[_i];
         if (taken.startsWith(courseCode)) {
             var grade = extractGrade(taken);
-            if (grade && grade <= minGrade) { // 'A' <= 'C' -> true (satisfied)
-                return true;
-            }
+            if (grade && grade <= minGrade)
+                return true; // 'A' < 'C'
         }
     }
     // --- 3️⃣ Enrolled in the same course (not necessarily with ^) ---
     for (var _a = 0, coursesEnrolled_1 = coursesEnrolled; _a < coursesEnrolled_1.length; _a++) {
         var enrolled = coursesEnrolled_1[_a];
-        if (enrolled.startsWith(courseCode)) {
+        if (enrolled.startsWith(courseCode))
             return true;
-        }
     }
     return false;
 }
@@ -131,6 +127,6 @@ if (require.main === module) {
     // ✅ Assertion 2 — should be false
     {
         var result = prereqchecker(["ECEN303 C", "CSCE120 C"], [], CSCE_421_prereq_bucket2);
-        assert.strictEqual(result, true, "Expected false, got ".concat(result, " for prereqchecker([\"ECEN303 C\", \"CSCE120 C\", \"CSCE310 B\"], [])"));
+        assert.strictEqual(result, false, "Expected true, got ".concat(result, " for prereqchecker([\"ECEN303 C\", \"CSCE120 C\", \"CSCE310 B\"], [])"));
     }
 }
