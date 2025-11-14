@@ -61,7 +61,8 @@ def prereqchecker(courses_taken, courses_enrolled, prereq_bucket):
 
 
 if __name__ == "__main__":
-    prereq_bucket = parse_prereq("data_Spring2026_Prereq_test (1).json","ECEN_403")
+    
+    prereq_bucket = parse_prereq("/Users/jonathankalsky/Documents/GitHub/InvolvementFoldersTAMU/Clubs/ACE/PersonalTest/data_Spring2026_Prereq_test (1).json","ECEN_403")
     import json
     print(json.dumps(prereq_bucket, indent=4))
     assert(prereqchecker(["COMM205 C", "ECEN314 C", "ECEN325 C", "CSCE350 C", "ECEN303 C", "ECEN322 C", "ECEN370 C"], [], prereq_bucket= prereq_bucket[:]) == True)

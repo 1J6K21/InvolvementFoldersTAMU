@@ -1,4 +1,4 @@
-import { parsePrereq, prereqchecker, evaluateSingleRequirement } from "./prereqchecker";
+import { parsePrereq, prereqchecker, evaluateSingleRequirement } from "./prereq_checker/prereqchecker";
 import * as fs from "fs";
 
 

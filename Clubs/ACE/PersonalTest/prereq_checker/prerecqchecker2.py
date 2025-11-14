@@ -99,7 +99,7 @@ def prereqchecker(courses_taken, courses_enrolled, prereq_bucket):
 
 if __name__ == "__main__":
     #ECEN 403 prereq bucket
-    prereq_bucket = parse_prereq("data_Spring2026_Prereq_test (1).json", "ECEN_403")
+    prereq_bucket = parse_prereq("/Users/jonathankalsky/Documents/GitHub/InvolvementFoldersTAMU/Clubs/ACE/PersonalTest/data_Spring2026_Prereq_test (1).json", "ECEN_403")
     
     # Example test cases:
     assert prereqchecker(
@@ -121,7 +121,7 @@ if __name__ == "__main__":
     ) == False
 
     #FINC_428 prereq bucket
-    FINC_428_prereq_bucket = parse_prereq("data_Spring2026_Prereq_test (1).json", "FINC_428")
+    FINC_428_prereq_bucket = parse_prereq("/Users/jonathankalsky/Documents/GitHub/InvolvementFoldersTAMU/Clubs/ACE/PersonalTest/data_Spring2026_Prereq_test (1).json", "FINC_428")
     assert prereqchecker(
         [],
         [],
@@ -142,7 +142,7 @@ if __name__ == "__main__":
         ["ACCT328 ^"],
         FINC_428_prereq_bucket
     ) == True
-    CSCE_421_prereq_bucket = parse_prereq("data_Spring2026_Prereq_test (1).json", "CSCE_421")
+    CSCE_421_prereq_bucket = parse_prereq("/Users/jonathankalsky/Documents/GitHub/InvolvementFoldersTAMU/Clubs/ACE/PersonalTest/data_Spring2026_Prereq_test (1).json", "CSCE_421")
     assert prereqchecker(
         ["ECEN303 C", "CSCE120 C"],
         [],

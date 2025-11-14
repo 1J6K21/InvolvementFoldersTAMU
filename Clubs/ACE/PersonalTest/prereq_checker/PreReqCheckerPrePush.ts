@@ -128,7 +128,7 @@ function prereqcheckerDummy(a: string[]): boolean {
 // --- Example main ---
 if (require.main === module) {
     
-    const prereqBucket = parsePrereq("data_Spring2026_Prereq_test (1).json", "ECEN_403");
+    const prereqBucket = parsePrereq("../data_Spring2026_Prereq_test (1).json", "ECEN_403");
 
     if (prereqBucket) {
         console.assert(
@@ -156,7 +156,7 @@ if (require.main === module) {
         );
     }
 
-    const FINC_428_prereq_bucket = parsePrereq("data_Spring2026_Prereq_test (1).json", "FINC_428");
+    const FINC_428_prereq_bucket = parsePrereq("../data_Spring2026_Prereq_test (1).json", "FINC_428");
 
     if (FINC_428_prereq_bucket) {
         console.assert(prereqchecker([], [], FINC_428_prereq_bucket) === false);
@@ -183,7 +183,7 @@ if (require.main === module) {
         );
         
     }
-    const CSCE_421_prereq_bucket = parsePrereq("data_Spring2026_Prereq_test (1).json", "CSCE_421");
+    const CSCE_421_prereq_bucket = parsePrereq("../data_Spring2026_Prereq_test (1).json", "CSCE_421");
     if(CSCE_421_prereq_bucket){    
         console.assert(
             prereqchecker(
@@ -196,7 +196,7 @@ if (require.main === module) {
     }    
 
     // Load test data (adjust filename as needed)
-    const CSCE_421_prereq_bucket2 = parsePrereq("data_Spring2026_Prereq_test (1).json", "CSCE_421");
+    const CSCE_421_prereq_bucket2 = parsePrereq("../data_Spring2026_Prereq_test (1).json", "CSCE_421");
 
     // ✅ Assertion 1 — should be false
     {
