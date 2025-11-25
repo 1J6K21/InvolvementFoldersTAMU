@@ -17,7 +17,7 @@ export default function App() {
       const prereqs = prereqJson["ECEN_403"].info.prereqs;
 
       const parsedTree = parsePrereqs(prereqs);
-      const evaluated = evaluateTree(parsedTree, takenJson.taken);
+      const evaluated = evaluateTree(parsedTree, takenJson.taken, takenJson.enrolled);
       const childrenToUse =
         evaluated.type === "and" ? evaluated.children : [evaluated];
 
