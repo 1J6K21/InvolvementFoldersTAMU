@@ -4,38 +4,32 @@ import "./styles.css";
 
 type Props = {
   node: Node | RootNode;
+  isRootChild?: boolean;  // <── NEW FLAG
 };
 
-export function RenderNode({ node }: Props) {
-  // ===================================================
-  // ROOT NODE — correct horizontal layout restored
-  // ===================================================
+export function RenderNode({ node, isRootChild = false }: Props) {
+
+  // ============================
+  // ROOT NODE (fixed)
+  // ============================
   if (node.type === "root") {
     return (
       <div className="node-container">
-        {/* Root circle */}
         <div className={`circle-node ${node.status ?? ""}`}>
           {node.courseName}
         </div>
 
-        {/* Children below root */}
         {node.children.length > 0 && (
           <div className="root-branch-container">
-            {/* Vertical line under root */}
-            <div className="root-vertical" />
 
-            {/* Horizontal line that children connect to */}
+            <div className="root-vertical" />
             <div className="root-horizontal" />
 
-            {/* CHILDREN ROW */}
             <div className="root-children-row">
               {node.children.map((child, i) => (
                 <div key={i} className="root-child">
-                  {/* Each child gets a small vertical line */}
                   <div className="child-vertical" />
-
-                  {/* Render subtree */}
-                  <RenderNode node={child} />
+                  <RenderNode node={child} isRootChild={true} />  {/* NEW */}
                 </div>
               ))}
             </div>
@@ -45,27 +39,49 @@ export function RenderNode({ node }: Props) {
     );
   }
 
-  // ===================================================
-  // SINGLE COURSE NODE (circle)
-  // ===================================================
+
+  // ===========================================
+  // CASE: Root child that is a group → horizontal
+  // ===========================================
+  if (isRootChild && (node.type === "and" || node.type === "or")) {
+    const label = node.type === "and" ? "AND" : "OR";
+
+    return (
+      <div className="group-box">
+        <div className="group-label">{label}</div>
+
+        <div className="root-children-row">
+          {node.children.map((child, i) => (
+            <div key={i} className="root-child">
+              <RenderNode node={child} />
+            </div>
+          ))}
+        </div>
+      </div>
+    );
+  }
+
+
+  // ===========================================
+  // NORMAL SINGLE-COURSE NODE
+  // ===========================================
   if (node.type === "single") {
-    const formatted = node.course.replace(/ (?:(\w)|\^)/g, (_, letter) => {
+    const text = node.course.replace(/ (?:(\w)|\^)/g, (_, letter) => {
       if (letter) return `\n| Pass Grade: ${letter} |`;
       return "\n| or Concurrent |";
     });
 
     return (
       <div className="node-container">
-        <div className={`circle-node ${node.status ?? ""}`}>
-          {formatted}
-        </div>
+        <div className={`circle-node ${node.status ?? ""}`}>{text}</div>
       </div>
     );
   }
 
-  // ===================================================
-  // GROUP NODE (AND / OR) — vertical layout restored
-  // ===================================================
+
+  // ===========================================
+  // Normal non-root AND/OR group nodes (vertical)
+  // ===========================================
   const label = node.type === "and" ? "AND" : "OR";
 
   return (
@@ -73,7 +89,6 @@ export function RenderNode({ node }: Props) {
       <div className={`group-box ${node.status ?? ""}`}>
         <div className="group-label">{label}</div>
 
-        {/* This is important: vertical stacking */}
         <div className="group-content">
           {node.children.map((child, i) => (
             <RenderNode key={i} node={child} />

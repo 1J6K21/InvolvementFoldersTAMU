@@ -171,11 +171,13 @@
 /* first layer horizontally */
 .root-children-row {
   display: flex;
-  flex-direction: row;
+  flex-direction: row;      /* horizontal layout */
+  gap: 40px;                /* spacing between children */
   justify-content: center;
-  gap: 40px;
-  margin-top: 0;
+  align-items: flex-start;
+  margin-top: 20px;
 }
+
 
 .root-child {
   display: flex;

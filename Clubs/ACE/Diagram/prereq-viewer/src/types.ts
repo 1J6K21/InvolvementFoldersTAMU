@@ -30,4 +30,4 @@ export interface RootNode {
 }
 
 
-export type Node = SingleNode | AndNode | OrNode;
+export type Node = SingleNode | AndNode | OrNode | RootNode;
