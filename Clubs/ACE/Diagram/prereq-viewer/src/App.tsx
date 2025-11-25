@@ -4,7 +4,16 @@ import { evaluateTree } from "./evaluateTree";
 import { RenderNode } from "./RenderNode";
 import type { Node, RootNode } from "./types";
 
-export default function App() {
+/**
+* @param course string
+* 
+* department in all caps; underscore between code/number and department; 
+* 
+* ```ts
+* ex: "ECEN_403"
+* ```
+*/
+export default function App({ course }: {course:string}) {
   const [root, setRoot] = useState<Node | null>(null);
 
   useEffect(() => {
@@ -14,7 +23,7 @@ export default function App() {
       );
       const takenJson = await fetch("/coursesTaken.json").then((r) => r.json());
 
-      const prereqs = prereqJson["ECEN_403"].info.prereqs;
+      const prereqs = prereqJson[course].info.prereqs;
 
       const parsedTree = parsePrereqs(prereqs);
       const evaluated = evaluateTree(parsedTree, takenJson.taken, takenJson.enrolled);
@@ -24,7 +33,7 @@ export default function App() {
       const rootWrapped: RootNode = {
         type: "root",
         id: "root-" + (evaluated.id ?? "0"),
-        courseName: "ECEN 403",
+        courseName: course.replace("_", " "),
         status: evaluated.status,
         children: childrenToUse,
       };
