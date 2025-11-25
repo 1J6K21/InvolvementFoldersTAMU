@@ -15,12 +15,19 @@ export function RenderNode({ node }: Props) {
           {node.courseName}
         </div>
 
+        {/* root branches */}
         {node.children.length > 0 && (
           <div className="root-branch-container">
             <div className="root-vertical" />
             <div className="root-horizontal" />
 
-            <div style={{ display: "flex", justifyContent: "center", gap: "30px" }}>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "center",
+                gap: "30px",
+              }}
+            >
               {node.children.map((child, i) => (
                 <div key={i} className="root-child">
                   <div className="child-vertical" />
@@ -50,13 +57,14 @@ export function RenderNode({ node }: Props) {
     );
   }
 
-  // GROUP NODES (AND / OR) --------------
+  // GROUP NODES (AND / OR) ----------------
   const label = node.type === "and" ? "AND" : "OR";
 
   return (
     <div className="node-container">
       <div className={`group-box ${node.status ?? ""}`}>
         <div className="group-label">{label}</div>
+
         <div className="group-content">
           {node.children.map((child, i) => (
             <RenderNode key={i} node={child} />
