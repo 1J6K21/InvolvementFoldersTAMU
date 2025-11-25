@@ -6,6 +6,6 @@ import "./styles.css";
 
 createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <App course="ECEN_403"/>
+    <App course="CSCE_331"/>
   </React.StrictMode>
 );
