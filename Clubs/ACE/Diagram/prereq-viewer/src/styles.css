@@ -190,3 +190,36 @@
   height: 20px;
   background: #000;
 }
+
+.and-connector-line {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 50%;
+  width: 3px;
+  background: #333;
+  transform: translateX(-50%);
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* .group-box > *:not(.and-connector-line) {
+  position: relative;
+  z-index: 1;
+}  
+  */
+
+/* Lift content ABOVE the line */
+.group-content {
+  position: relative;
+  z-index: 2;
+}
+
+/* Lift label ABOVE content*/
+
+.group-label {
+  /* position: relative; */
+  z-index: 3;
+}  
+
+

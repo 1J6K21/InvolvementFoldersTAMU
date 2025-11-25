@@ -82,14 +82,22 @@ export function RenderNode({ node, isRootChild = false }: Props) {
 
 
   // ===========================================
-  // Normal non-root AND/OR group nodes (vertical)
-  // ===========================================
-  const label = node.type === "and" ? "AND" : "OR";
-  
+// Normal non-root AND/OR group nodes (vertical)
+// ===========================================
+const label = node.type === "and" ? "AND" : "OR";
+
+// Special case: vertical AND chain gets a connector line
+if (!isRootChild && node.type === "and") {
   return (
     <div className="node-container">
-      <div className={`group-box ${node.status ?? ""}`}>
+      <div
+        className={`group-box ${node.status ?? ""}`}
+        style={{ position: "relative" }}
+      >
         <div className="group-label">{label}</div>
+
+        {/* vertical line connecting children */}
+        <div className="and-connector-line" />
 
         <div className="group-content">
           {node.children.map((child, i) => (
@@ -99,4 +107,21 @@ export function RenderNode({ node, isRootChild = false }: Props) {
       </div>
     </div>
   );
+}
+
+// normal OR or root-child AND groups (no vertical line)
+return (
+  <div className="node-container">
+    <div className={`group-box ${node.status ?? ""}`}>
+      <div className="group-label">{label}</div>
+
+      <div className="group-content">
+        {node.children.map((child, i) => (
+          <RenderNode key={i} node={child} />
+        ))}
+      </div>
+    </div>
+  </div>
+);
+
 }
