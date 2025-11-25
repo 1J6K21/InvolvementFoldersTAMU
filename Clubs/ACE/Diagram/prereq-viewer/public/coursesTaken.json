@@ -1,6 +1,6 @@
 {
     "taken": [
-        "CSCE120 A",
+        "CSCE120 C",
         "MATH141 A",
         "MATH142 A",
         "CSCE_221",
@@ -8,9 +8,12 @@
         "COMM205 C",
         "ECEN350 C",
         "MATH148 D",
-        "ECEN314 C"
+        "ECEN314 C",
+        "CSCE222 C",
+        "PBSI301 C",
+        "PBSI107 C"
         
 
     ],
-    "enrolled": []
+    "enrolled": ["CSCE222 C"]
 }

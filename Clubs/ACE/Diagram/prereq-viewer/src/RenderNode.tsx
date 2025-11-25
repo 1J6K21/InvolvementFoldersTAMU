@@ -12,6 +12,7 @@ export function RenderNode({ node, isRootChild = false }: Props) {
   // ============================
   // ROOT NODE (fixed)
   // ============================
+  
   if (node.type === "root") {
     return (
       <div className="node-container">
@@ -44,22 +45,23 @@ export function RenderNode({ node, isRootChild = false }: Props) {
   // CASE: Root child that is a group → horizontal
   // ===========================================
   if (isRootChild && (node.type === "and" || node.type === "or")) {
-    const label = node.type === "and" ? "AND" : "OR";
+  const label = node.type === "and" ? "AND" : "OR";
 
-    return (
-      <div className="group-box">
-        <div className="group-label">{label}</div>
+  return (
+    <div className={`group-box ${node.status ?? ""}`}>
+      <div className="group-label">{label}</div>
 
-        <div className="root-children-row">
-          {node.children.map((child, i) => (
-            <div key={i} className="root-child">
-              <RenderNode node={child} />
-            </div>
-          ))}
-        </div>
+      <div className="root-children-row">
+        {node.children.map((child, i) => (
+          <div key={i} className="root-child">
+            <RenderNode node={child} />
+          </div>
+        ))}
       </div>
-    );
-  }
+    </div>
+  );
+}
+
 
 
   // ===========================================
@@ -83,7 +85,7 @@ export function RenderNode({ node, isRootChild = false }: Props) {
   // Normal non-root AND/OR group nodes (vertical)
   // ===========================================
   const label = node.type === "and" ? "AND" : "OR";
-
+  
   return (
     <div className="node-container">
       <div className={`group-box ${node.status ?? ""}`}>

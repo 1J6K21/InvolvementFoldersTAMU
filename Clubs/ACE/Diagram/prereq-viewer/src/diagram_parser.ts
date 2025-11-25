@@ -1,6 +1,10 @@
 // src/diagram_parser.ts
 import type { Node } from "./types";
 
+let _nodeId = 0;
+function makeId() {
+  return `node-${_nodeId++}`;
+}
 /**
  * Parse an input prereq expression (arrays with "." as OR) into a Node.
  * For top-level usage we expose parsePrereqsList which returns Node[] (branches).
@@ -8,7 +12,7 @@ import type { Node } from "./types";
 
 export function parsePrereqs(input: any): Node {
   // If input is a string -> single node
-  if (typeof input === "string") return { type: "single", course: input };
+  if (typeof input === "string") return { type: "single", id:makeId(), course: input };
 
   if (!Array.isArray(input)) throw new Error("Unexpected prereq format");
 
@@ -30,7 +34,7 @@ export function parsePrereqs(input: any): Node {
     if (current.length) segments.push(current);
 
     const children = segments.map(seg => parseAndSegment(seg));
-    return { type: "or", children };
+    return { type: "or", id:makeId(), children };
   }
 
   // otherwise the array is an AND group
@@ -40,7 +44,7 @@ export function parsePrereqs(input: any): Node {
 function parseAndSegment(arr: any[]): Node {
   const children = arr.map(parsePrereqs);
   if (children.length === 1) return children[0];
-  return { type: "and", children };
+  return { type: "and", id:makeId(), children };
 }
 
 /**
