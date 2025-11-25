@@ -222,4 +222,17 @@
   z-index: 3;
 }  
 
+.root-children-row {
+  display: flex;
+  flex-direction: row;
+  gap: 40px;
+  justify-content: center;
+  align-items: flex-start;
+
+  flex-wrap: wrap;    /* 👈 KEY */
+  max-width: 90vw;    /* prevents overflow */
+}
+
+
+
 
