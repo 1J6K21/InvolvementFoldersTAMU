@@ -1,34 +1,33 @@
+/* ---- NODE LAYOUT ---- */
 .node-container {
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 20px;
 }
 
-.single {
-  padding: 8px 14px;
-  background: white;
-  border: 2px solid black;
+/* ---- CIRCLES (root + single) ---- */
+.circle-node {
+  border: 3px solid #333;
   border-radius: 50%;
-}
-
-.branches {
-  margin-top: 20px;
-  display: flex;
-  gap: 40px;
+  padding: 18px 24px;
+  font-weight: bold;
+  background: white;
+  display: inline-flex;
   justify-content: center;
+  align-items: center;
+  white-space: pre-line;
+  text-align: center;
+
 }
 
-.branch {
-  display: flex;
-  justify-content: center;
-}
-
+/* ---- GROUP BOXES ---- */
 .group-box {
+  border: 3px solid #444;
+  border-radius: 10px;
+  padding: 3px 10px 2px 10px;
   position: relative;
-  border: 2px solid black;
-  padding: 20px;
-  border-radius: 12px;
-  background: #f8f8f8;
+  background: #fafafa;
 }
 
 .group-label {
@@ -36,7 +35,52 @@
   top: -14px;
   left: 50%;
   transform: translateX(-50%);
-  background: white;
+  background: #fff;
   padding: 0 8px;
   font-weight: bold;
+  border: 2px solid #000;
+  border-radius: 6px;
+}
+
+.group-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 5px;
+}
+
+/* ---- ROOT BRANCHES ONLY ---- */
+
+.root-branch-container {
+  margin-top: 20px;
+  position: relative;
+}
+
+.root-vertical {
+  width: 3px;
+  height: 32px;
+  background: #000;
+  margin: 0 auto;
+}
+
+.root-horizontal {
+  height: 3px;
+  background: #000;
+  width: 100%;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.root-child {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 0;
+}
+
+.child-vertical {
+  width: 3px;
+  height: 20px;
+  background: #000;
 }

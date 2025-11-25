@@ -1,51 +1,30 @@
-// src/App.tsx
-import React, { useEffect, useState } from "react";
-import { parsePrereqsList } from "./diagram_parser";
+import { useEffect, useState } from "react";
 import { RenderNode } from "./RenderNode";
-import type { Node, SingleNode } from "./types";
-import "./styles.css";
+import { parsePrereqs } from "./diagram_parser";
+import type { RootNode } from "./types";
 
 export default function App() {
-  const [root, setRoot] = useState<Node | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [root, setRoot] = useState<RootNode | null>(null);
 
   useEffect(() => {
-    async function load() {
-      try {
-        const res = await fetch("/data_Spring2026_Prereq_test.json");
-        if (!res.ok) throw new Error("Failed to load prereq file");
-        const json = await res.json();
+    fetch("/public/data_Spring2026_Prereq_test.json")
+      .then((r) => r.json())
+      .then((json) => {
+        const prereqs = json["ECEN_403"].info.prereqs;
+        const parsed = parsePrereqs(prereqs);
 
-        const courseName = "ECEN_403";
-        const classBucket = json[courseName];
-        const prereqs = classBucket?.info?.prereqs ?? [];
-
-        // parse into Node[] branches
-        const children = parsePrereqsList(prereqs);
-
-        // create a SingleNode root that *has* children
-        const rootNode: SingleNode = {
-          type: "single",
-          course: courseName,
-          children, // optional field we added in types
-        };
-
-        setRoot(rootNode);
-      } catch (e) {
-        console.error("Error loading prereqs", e);
-        setRoot(null);
-      } finally {
-        setLoading(false);
-      }
-    }
-    load();
+        setRoot({
+          type: "root",
+          courseName: "ECEN_403",
+          children: parsed.type === "single" ? [parsed] : parsed.children,
+        });
+      });
   }, []);
 
-  if (loading) return <div className="p-8">Loading…</div>;
-  if (!root) return <div className="p-8">No prereqs found or load failed.</div>;
+  if (!root) return <div>Loading...</div>;
 
   return (
-    <div className="p-8 flex justify-center">
+    <div className="p-10 flex justify-center">
       <RenderNode node={root} />
     </div>
   );
