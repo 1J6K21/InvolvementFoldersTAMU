@@ -6,8 +6,31 @@
   margin: 20px;
 }
 
+.node {
+  padding: 6px 10px;
+  border-radius: 6px;
+  margin: 4px 0;
+  border-left: 4px solid transparent;
+}
+
+.node.met {
+  background-color: #e7ffe7;
+  border-left-color: #32cd32; /* green */
+}
+
+.node.needed {
+  background-color: #ffe7e7;
+  border-left-color: #ff4c4c; /* red */
+}
+
+.node-group {
+  padding-left: 16px;
+  margin-top: 8px;
+  border-left: 2px dashed #aaa;
+}
+
 /* ---- CIRCLES (root + single) ---- */
-.circle-node.unmet{
+.circle-node.needed{
   border: 3px solid #333;
   border-radius: 50%;
   padding: 18px 24px;
@@ -34,6 +57,17 @@
   text-align: center;
   background-color: #d4ffd4;   /* light green */
   border-color: #32cd32;
+}
+.circle-node.met {
+  background: #d7ffd7;
+  border-color: #2ecc40;
+  color: #000;
+}
+
+.circle-node.needed {
+  background: #ffe5e5;
+  border-color: #ff2b2b;
+  color: #000;
 }
 
 /* ---- GROUP BOXES ---- */
@@ -64,6 +98,25 @@
   align-items: center;
   gap: 5px;
 }
+
+.group-box.met {
+  border-color: #2ecc40;
+  background: #eaffea;
+}
+
+.group-box.needed {
+  border-color: #ff2b2b;
+  background: #ffeaea;
+}
+
+.group-label {
+  border: 2px solid #333;   /* add this */
+  border-radius: 6px;        /* border around AND/OR */
+  padding: 2px 6px;
+  background: #fff;
+  font-weight: bold;
+}
+
 
 /* ---- ROOT BRANCHES ONLY ---- */
 

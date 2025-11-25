@@ -12,7 +12,7 @@ export default function App() {
       const prereqJson = await fetch("/data_Spring2026_Prereq_test.json").then(r => r.json());
       const takenJson = await fetch("/coursesTaken.json").then(r => r.json());
 
-      const prereqs = prereqJson["MATH_251"].info.prereqs;
+      const prereqs = prereqJson["ECEN_403"].info.prereqs;
 
       const parsedTree = parsePrereqs(prereqs);
       const evaluated = evaluateTree(parsedTree, takenJson.taken);
