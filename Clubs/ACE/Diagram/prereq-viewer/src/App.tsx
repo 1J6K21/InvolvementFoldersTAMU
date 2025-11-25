@@ -1,30 +1,32 @@
 import { useEffect, useState } from "react";
-import { RenderNode } from "./RenderNode";
 import { parsePrereqs } from "./diagram_parser";
-import type { RootNode } from "./types";
+import { evaluateTree } from "./evaluateTree";
+import { RenderNode } from "./RenderNode";
+import type { Node } from "./types";
 
 export default function App() {
-  const [root, setRoot] = useState<RootNode | null>(null);
+  const [root, setRoot] = useState<Node | null>(null);
 
   useEffect(() => {
-    fetch("/public/data_Spring2026_Prereq_test.json")
-      .then((r) => r.json())
-      .then((json) => {
-        const prereqs = json["ECEN_403"].info.prereqs;
-        const parsed = parsePrereqs(prereqs);
+    async function load() {
+      const prereqJson = await fetch("/data_Spring2026_Prereq_test.json").then(r => r.json());
+      const takenJson = await fetch("/coursesTaken.json").then(r => r.json());
 
-        setRoot({
-          type: "root",
-          courseName: "ECEN_403",
-          children: parsed.type === "single" ? [parsed] : parsed.children,
-        });
-      });
+      const prereqs = prereqJson["MATH_251"].info.prereqs;
+
+      const parsedTree = parsePrereqs(prereqs);
+      const evaluated = evaluateTree(parsedTree, takenJson.taken);
+
+      setRoot(evaluated);
+    }
+
+    load();
   }, []);
 
   if (!root) return <div>Loading...</div>;
 
   return (
-    <div className="p-10 flex justify-center">
+    <div className="p-8">
       <RenderNode node={root} />
     </div>
   );

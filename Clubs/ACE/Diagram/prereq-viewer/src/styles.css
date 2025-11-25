@@ -84,3 +84,13 @@
   height: 20px;
   background: #000;
 }
+
+.met {
+  border-color: green !important;
+  color: green;
+}
+
+.needed {
+  border-color: red !important;
+  color: red;
+}
