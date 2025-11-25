@@ -1,63 +1,33 @@
-/* ---- NODE LAYOUT ---- */
+/* ================================
+   BASIC CONTAINERS
+================================ */
 .node-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  margin: 20px;
+  margin: 14px;
 }
 
-.node {
-  padding: 6px 10px;
-  border-radius: 6px;
-  margin: 4px 0;
-  border-left: 4px solid transparent;
-}
-
-.node.met {
-  background-color: #e7ffe7;
-  border-left-color: #32cd32; /* green */
-}
-
-.node.needed {
-  background-color: #ffe7e7;
-  border-left-color: #ff4c4c; /* red */
-}
-
-.node-group {
-  padding-left: 16px;
-  margin-top: 8px;
-  border-left: 2px dashed #aaa;
-}
-
-/* ---- CIRCLES (root + single) ---- */
-.circle-node.needed{
+/* ================================
+   CIRCLE NODES (ROOT + SINGLE)
+================================ */
+.circle-node {
   border: 3px solid #333;
   border-radius: 50%;
-  padding: 18px 24px;
+  padding: 18px 26px;
   font-weight: bold;
   background: white;
+  text-align: center;
+  white-space: pre-line;
   display: inline-flex;
   justify-content: center;
   align-items: center;
-  white-space: pre-line;
-  text-align: center;
-  background-color: #ffd4d4;   /* light red */
-  border-color: #ff4444;
+
+  /* animations */
+  transition: transform 0.18s ease, box-shadow 0.2s ease;
 }
-.circle-node.met{
-  border: 3px solid #333;
-  border-radius: 50%;
-  padding: 18px 24px;
-  font-weight: bold;
-  background: white;
-  display: inline-flex;
-  justify-content: center;
-  align-items: center;
-  white-space: pre-line;
-  text-align: center;
-  background-color: #d4ffd4;   /* light green */
-  border-color: #32cd32;
-}
+
+/* Status colors */
 .circle-node.met {
   background: #d7ffd7;
   border-color: #2ecc40;
@@ -70,33 +40,32 @@
   color: #000;
 }
 
-/* ---- GROUP BOXES ---- */
+/* HOVER ANIMATION */
+.circle-node:hover {
+  transform: scale(1.07);
+  box-shadow: 0 0 12px rgba(0,0,0,0.18);
+}
+
+/* Glow based on status */
+.circle-node.met:hover {
+  box-shadow: 0 0 18px rgba(46, 204, 64, 0.5);
+}
+
+.circle-node.needed:hover {
+  box-shadow: 0 0 18px rgba(255, 43, 43, 0.5);
+}
+
+/* ================================
+   GROUP BOX (AND / OR)
+================================ */
 .group-box {
   border: 3px solid #444;
   border-radius: 10px;
-  padding: 3px 10px 2px 10px;
-  position: relative;
+  padding: 18px;
   background: #fafafa;
-}
+  position: relative;
 
-.group-label {
-  position: absolute;
-  top: -14px;
-  left: 50%;
-  transform: translateX(-50%);
-  background: #fff;
-  padding: 0 8px;
-  font-weight: bold;
-  border: 2px solid #000;
-  border-radius: 6px;
-}
-
-.group-content {
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-  gap: 5px;
+  transition: transform 0.18s ease, box-shadow 0.2s ease;
 }
 
 .group-box.met {
@@ -109,17 +78,77 @@
   background: #ffeaea;
 }
 
-.group-label {
-  border: 2px solid #333;   /* add this */
-  border-radius: 6px;        /* border around AND/OR */
-  padding: 2px 6px;
-  background: #fff;
-  font-weight: bold;
+/* Hover */
+.group-box:hover {
+  transform: scale(1.03);
+  box-shadow: 0 0 12px rgba(0,0,0,0.18);
 }
 
+.group-box.met:hover {
+  box-shadow: 0 0 14px rgba(46, 204, 64, 0.45);
+}
 
-/* ---- ROOT BRANCHES ONLY ---- */
+.group-box.needed:hover {
+  box-shadow: 0 0 14px rgba(255, 43, 43, 0.45);
+}
 
+/* Group label (AND / OR badge) */
+.group-label {
+  position: absolute;
+  top: -14px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #fff;
+  padding: 2px 8px;
+  font-weight: bold;
+  border: 2px solid #333;
+  border-radius: 6px;
+}
+
+/* children arranged vertically */
+.group-content {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+
+  animation: groupFadeIn 0.3s ease;
+}
+
+/* ================================
+   ANIMATIONS
+================================ */
+@keyframes groupFadeIn {
+  0% {
+    transform: translateY(-8px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.root-vertical,
+.root-horizontal,
+.child-vertical {
+  animation: lineReveal 0.35s ease-out;
+}
+
+@keyframes lineReveal {
+  0% {
+    transform: scaleY(0.1);
+    opacity: 0;
+  }
+  100% {
+    transform: scaleY(1);
+    opacity: 1;
+  }
+}
+
+/* ================================
+   ROOT BRANCHES
+================================ */
 .root-branch-container {
   margin-top: 20px;
   position: relative;
@@ -137,17 +166,9 @@
   background: #000;
   width: 100%;
   margin-top: 0;
-  margin-bottom: 0;
 }
 
-.root-child {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  margin-top: 0;
-}
-
-/* Horizontal row under the root */
+/* first layer horizontally */
 .root-children-row {
   display: flex;
   flex-direction: row;
@@ -156,11 +177,9 @@
   margin-top: 0;
 }
 
-/* Restore vertical layouts for groups */
-.group-content-vertical {
+.root-child {
   display: flex;
   flex-direction: column;
-  gap: 12px;
   align-items: center;
 }
 
@@ -169,4 +188,3 @@
   height: 20px;
   background: #000;
 }
-

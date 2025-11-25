@@ -7,30 +7,34 @@ type Props = {
 };
 
 export function RenderNode({ node }: Props) {
-  // ROOT NODE ---------------------------
+  // ===================================================
+  // ROOT NODE — correct horizontal layout restored
+  // ===================================================
   if (node.type === "root") {
     return (
       <div className="node-container">
+        {/* Root circle */}
         <div className={`circle-node ${node.status ?? ""}`}>
           {node.courseName}
         </div>
 
-        {/* root branches */}
+        {/* Children below root */}
         {node.children.length > 0 && (
           <div className="root-branch-container">
+            {/* Vertical line under root */}
             <div className="root-vertical" />
+
+            {/* Horizontal line that children connect to */}
             <div className="root-horizontal" />
 
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "center",
-                gap: "30px",
-              }}
-            >
+            {/* CHILDREN ROW */}
+            <div className="root-children-row">
               {node.children.map((child, i) => (
                 <div key={i} className="root-child">
+                  {/* Each child gets a small vertical line */}
                   <div className="child-vertical" />
+
+                  {/* Render subtree */}
                   <RenderNode node={child} />
                 </div>
               ))}
@@ -41,9 +45,11 @@ export function RenderNode({ node }: Props) {
     );
   }
 
-  // SINGLE NODE ---------------------------
+  // ===================================================
+  // SINGLE COURSE NODE (circle)
+  // ===================================================
   if (node.type === "single") {
-    const text = node.course.replace(/ (?:(\w)|\^)/g, (_, letter) => {
+    const formatted = node.course.replace(/ (?:(\w)|\^)/g, (_, letter) => {
       if (letter) return `\n| Pass Grade: ${letter} |`;
       return "\n| or Concurrent |";
     });
@@ -51,13 +57,15 @@ export function RenderNode({ node }: Props) {
     return (
       <div className="node-container">
         <div className={`circle-node ${node.status ?? ""}`}>
-          {text}
+          {formatted}
         </div>
       </div>
     );
   }
 
-  // GROUP NODES (AND / OR) ----------------
+  // ===================================================
+  // GROUP NODE (AND / OR) — vertical layout restored
+  // ===================================================
   const label = node.type === "and" ? "AND" : "OR";
 
   return (
@@ -65,6 +73,7 @@ export function RenderNode({ node }: Props) {
       <div className={`group-box ${node.status ?? ""}`}>
         <div className="group-label">{label}</div>
 
+        {/* This is important: vertical stacking */}
         <div className="group-content">
           {node.children.map((child, i) => (
             <RenderNode key={i} node={child} />
