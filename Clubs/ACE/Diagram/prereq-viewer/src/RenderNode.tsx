@@ -4,30 +4,45 @@ import type { Node } from "./types";
 import "./styles.css";
 
 export function RenderNode({ node }: { node: Node }) {
-  if (!node) return null;
-
+  // narrow by discriminant 'type'
   if (node.type === "single") {
     return (
-      <div className="rn-single">
-        <div className="rn-single-circle">{node.course}</div>
+      <div className="node-container">
+        <div className="single-course">{
+        node.course
+        .replace(/ (?:(\w)|\^)/g, (_, letter) => {
+          if (letter) {
+            return ` | Pass Grade: ${letter}`;
+          }
+          return " | or Concurrent";
+        })
+          }</div>
+
+        {node.children && node.children.length > 0 && (
+          <div className="branches">
+            {node.children.map((child, i) => (
+              <div key={i} className="branch">
+                <RenderNode node={child} />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     );
   }
 
+  // node is or/and here
   const label = node.type === "or" ? "OR" : "AND";
 
   return (
-    <div className="rn-group">
-      {/* box with top-center tab */}
-      <div className={`rn-box rn-box-${node.type}`}>
-        <div className="rn-tab">{label}</div>
-        <div className="rn-children">
-          {node.children.map((child, i) => (
-            <div className="rn-child" key={i}>
-              <RenderNode node={child} />
-            </div>
-          ))}
-        </div>
+    <div className="group-box">
+      <div className="group-label">{label}</div>
+      <div className="group-content">
+        {node.children.map((child, i) => (
+          <div key={i}>
+            <RenderNode node={child} />
+          </div>
+        ))}
       </div>
     </div>
   );

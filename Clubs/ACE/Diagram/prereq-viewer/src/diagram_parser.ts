@@ -1,20 +1,25 @@
 // src/diagram_parser.ts
 import type { Node } from "./types";
 
-export function parsePrereqs(input: any): Node {
-  if (!Array.isArray(input)) {
-    // If it's a single course string
-    if (typeof input === "string") return { type: "single", course: input };
-    throw new Error("Unexpected prereq format");
-  }
+/**
+ * Parse an input prereq expression (arrays with "." as OR) into a Node.
+ * For top-level usage we expose parsePrereqsList which returns Node[] (branches).
+ */
 
-  // If the array contains ".", treat top-level as OR of segments
+export function parsePrereqs(input: any): Node {
+  // If input is a string -> single node
+  if (typeof input === "string") return { type: "single", course: input };
+
+  if (!Array.isArray(input)) throw new Error("Unexpected prereq format");
+
+  // If the array contains "." treat the array as OR of segments
   if (input.includes(".")) {
     const segments: any[][] = [];
     let current: any[] = [];
+
     for (const item of input) {
       if (item === ".") {
-        if (current.length > 0) {
+        if (current.length) {
           segments.push(current);
           current = [];
         }
@@ -22,26 +27,51 @@ export function parsePrereqs(input: any): Node {
         current.push(item);
       }
     }
-    if (current.length > 0) segments.push(current);
+    if (current.length) segments.push(current);
 
-    // each segment becomes an AND group (or single)
-    const children = segments.map((seg) => parseAndSegment(seg));
-    // collapse single-child OR children if they are single nodes (still wrap in or)
+    const children = segments.map(seg => parseAndSegment(seg));
     return { type: "or", children };
   }
 
-  // no "." -> whole list is AND
+  // otherwise the array is an AND group
   return parseAndSegment(input);
 }
 
 function parseAndSegment(arr: any[]): Node {
-  const children: Node[] = arr.map(parseItem);
+  const children = arr.map(parsePrereqs);
   if (children.length === 1) return children[0];
   return { type: "and", children };
 }
 
-function parseItem(item: any): Node {
-  if (Array.isArray(item)) return parsePrereqs(item);
-  if (typeof item === "string") return { type: "single", course: item };
-  throw new Error("Invalid prereq item: " + JSON.stringify(item));
+/**
+ * Helper to parse the top-level prereq array into an array of Node branches
+ * (useful for attaching them to the root single course)
+ */
+export function parsePrereqsList(input: any): Node[] {
+  if (!Array.isArray(input)) {
+    // single item -> single node as single branch
+    return [parsePrereqs(input)];
+  }
+
+  // We want top level to be multiple branches, split by "." into segments.
+  if (input.includes(".")) {
+    const segments: any[][] = [];
+    let current: any[] = [];
+    for (const item of input) {
+      if (item === ".") {
+        if (current.length) {
+          segments.push(current);
+          current = [];
+        }
+      } else {
+        current.push(item);
+      }
+    }
+    if (current.length) segments.push(current);
+    return segments.map(seg => parseAndSegment(seg));
+  }
+
+  // no "." -> every element is its own branch (AND collapsed into a branch or single)
+  // But you said you want separate branches at top-level, so treat each item as one branch.
+  return input.map((it: any) => parsePrereqs(it));
 }
