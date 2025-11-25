@@ -7,7 +7,7 @@
 }
 
 /* ---- CIRCLES (root + single) ---- */
-.circle-node {
+.circle-node.unmet{
   border: 3px solid #333;
   border-radius: 50%;
   padding: 18px 24px;
@@ -18,7 +18,22 @@
   align-items: center;
   white-space: pre-line;
   text-align: center;
-
+  background-color: #ffd4d4;   /* light red */
+  border-color: #ff4444;
+}
+.circle-node.met{
+  border: 3px solid #333;
+  border-radius: 50%;
+  padding: 18px 24px;
+  font-weight: bold;
+  background: white;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  white-space: pre-line;
+  text-align: center;
+  background-color: #d4ffd4;   /* light green */
+  border-color: #32cd32;
 }
 
 /* ---- GROUP BOXES ---- */
@@ -85,12 +100,3 @@
   background: #000;
 }
 
-.met {
-  border-color: green !important;
-  color: green;
-}
-
-.needed {
-  border-color: red !important;
-  color: red;
-}
