@@ -58,6 +58,7 @@ interface ChatWindowProps {
   onRename: (id: string, newTitle: string) => void;
 }
 
+//implement these changes of pdf uploads and references in nexodeck project
 export default function ChatWindow({ id, title, onClose, isCollapsed, onToggleCollapse, onRename }: ChatWindowProps) {
   const [messages, setMessages] = useState<Message[]>([]);
   const messagesRef = useRef<Message[]>(messages);
