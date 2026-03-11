@@ -97,7 +97,7 @@ export default function ChatWindow({ id, title, onClose, isCollapsed, onToggleCo
     if (scrollContainerRef.current && isAtBottomRef.current) {
       scrollContainerRef.current.scrollTo({
         top: scrollContainerRef.current.scrollHeight,
-        behavior: "smooth"
+        behavior: "auto"
       });
     }
   }, [messages, loading]);
@@ -105,8 +105,9 @@ export default function ChatWindow({ id, title, onClose, isCollapsed, onToggleCo
   const handleScroll = () => {
     if (scrollContainerRef.current) {
       const { scrollTop, scrollHeight, clientHeight } = scrollContainerRef.current;
-      // Allow for small buffer (10px) to determine if at bottom
-      const isNearBottom = scrollHeight - scrollTop - clientHeight < 50;
+      // Use a smaller threshold (20px) to determine if at bottom
+      // This makes it easier to "unlock" from the bottom by scrolling up
+      const isNearBottom = scrollHeight - scrollTop - clientHeight < 20;
       isAtBottomRef.current = isNearBottom;
     }
   };
@@ -242,6 +243,8 @@ export default function ChatWindow({ id, title, onClose, isCollapsed, onToggleCo
 
     if (!loading) {
       // If nothing is loading, process this message immediately
+      // Force scroll to bottom when user sends a message
+      isAtBottomRef.current = true;
       processMessage(userMsg);
     }
   };
@@ -622,7 +625,7 @@ export default function ChatWindow({ id, title, onClose, isCollapsed, onToggleCo
           <main 
             ref={scrollContainerRef} 
             onScroll={handleScroll}
-            className="flex-1 min-h-0 overflow-y-auto p-6 space-y-6 scroll-smooth"
+            className="flex-1 min-h-0 overflow-y-auto p-6 space-y-6"
           >
             {messages.length === 0 && (
               <div className="flex flex-col items-center justify-center h-full text-slate-400 opacity-60">
